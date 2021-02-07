@@ -2,6 +2,8 @@
 from picar.SunFounder_TB6612 import TB6612
 from drivers import PCA9685
 from components import Servo, Throttle
+
+import atexit
 import decimal
 import time
 
@@ -14,6 +16,8 @@ CHN_PWM_B = 5
 
 DIR_MIN = 30
 DIR_MAX = 150
+
+tempo = 5
 
 def float_range(A, L=None, D=None):
   #Use float number in range() function
@@ -32,15 +36,17 @@ def float_range(A, L=None, D=None):
     A = A + D
 
 def main():
+  atexit.register(emergency)
+  
   # direction()
   engine()
 
 
 def direction():
   delay = 1.0/80
-  tempo = 5
 
   print("Start !")
+  global servo
   servo = Servo.Servo(CHN_PWM_DIR)
   servo.debug = True
   #servo.driver.debug = True
@@ -77,17 +83,54 @@ def direction():
 
 
 def engine():
+  delay = 0.05
 
   throttle_a = Throttle.Throttle(CHN_PWM_A)
   throttle_a.debug = True
   throttle_b = Throttle.Throttle(CHN_PWM_B)
   throttle_b.debug = True
 
-  left_wheel = TB6612.Motor(GPIO_MOTOR_ROT_A, pwm=throttle_a, offset=False)
-  right_wheel = TB6612.Motor(GPIO_MOTOR_ROT_B, pwm=throttle_b, offset=False)
+  global motorA
+  global motorB
+  motorA = TB6612.Motor(GPIO_MOTOR_ROT_A, pwm=throttle_a.write, offset=False)
+  motorB = TB6612.Motor(GPIO_MOTOR_ROT_B, pwm=throttle_b.write, offset=False)
 
+  motorA.forward()
+  for i in range(0, 101, 20):
+    motorA.speed = i
+    time.sleep(3)
+  time.sleep(tempo)
 
+  for i in range(100, -1, -1):
+    motorA.speed = i
+    time.sleep(delay)
+  time.sleep(tempo)
 
+  motorA.backward()
+  for i in range(0, 101, 20):
+    motorA.speed = i
+    time.sleep(3)
+  time.sleep(tempo)
+
+  motorA.speed = 0
+  motorA.forward()
+  motorB.speed = 0
+  motorB.forward()
+  
+  for i in range(0, 101, 10):
+    motorA.speed = i
+    motorB.speed = i
+    time.sleep(1)
+
+  motorA.speed = 0
+  motorA.forward()
+  motorB.speed = 0
+  motorB.forward()
+
+def emergency():
+  # servo.default()
+  motorA.stop()
+  motorB.stop()
 
 if __name__ == "__main__":
     main()

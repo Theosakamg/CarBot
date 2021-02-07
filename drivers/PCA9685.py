@@ -46,7 +46,7 @@ class PWM(object):
   def __init__(self, bus_number=1, address=0x40):
     self.__address = address
     self.__bus_number = bus_number
-    self.__bus = smbus.SMBus(self.__bus_number)
+    self.__bus = smbus2.SMBus(self.__bus_number)
 
   def _debug_(self,message):
     if self._DEBUG:
@@ -104,7 +104,8 @@ class PWM(object):
       print("I2C device exist.")
     else:
       print("Seems like I2C have not been set, run 'sudo raspi-config' to enable I2C")
-    cmd = "i2cdetect -y %s" % self.__bus_number _, output = self._run_command(cmd)
+    cmd = "i2cdetect -y %s" % self.__bus_number
+    _, output = self._run_command(cmd)
     print("Your PCA9685 address is set to 0x%02X" % self.__address)
     print("i2cdetect output:")
     print(output)
