@@ -1,7 +1,9 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
+
 from picar.SunFounder_TB6612 import TB6612
 from drivers import PCA9685
 from components import Servo, Throttle
+from ros.geometry_msgs import Twist
 
 import atexit
 import decimal
@@ -37,9 +39,35 @@ def float_range(A, L=None, D=None):
 
 def main():
   atexit.register(emergency)
-  
   # direction()
-  engine()
+  # engine()
+
+  speed = 1.0
+  distance = 2.0
+
+  node = CarNode()
+
+  vel_msg = Twist()
+  vel_msg.linear.x = speed
+
+  #while not rospy.is_shutdown():
+  #Setting the current time for distance calculus
+  t0 = time.time()  # rospy.Time.now().to_sec()
+  current_distance = 0
+
+  #Loop to move the turtle in an specified distance
+  while(current_distance < distance):
+      #Publish the velocity
+      node.publish(vel_msg)
+      #Takes actual time to velocity calculus
+      t1 = time.time()  # rospy.Time.now().to_sec()
+      #Calculates distancePoseStamped
+      current_distance= speed*(t1-t0)
+
+  #After the loop, stops the robot
+  vel_msg.linear.x = 0
+  #Force the robot to stop
+  node.publish(vel_msg)
 
 
 def direction():
@@ -129,8 +157,8 @@ def engine():
 
 def emergency():
   # servo.default()
-  motorA.stop()
-  motorB.stop()
+  # motorA.stop()
+  # motorB.stop()
 
 if __name__ == "__main__":
     main()
