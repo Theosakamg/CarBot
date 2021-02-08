@@ -21,6 +21,8 @@ DIR_MAX = 150
 
 tempo = 5
 
+node = CarNode()
+
 def float_range(A, L=None, D=None):
   #Use float number in range() function
   # if L and D argument is null set A=0.0 and D = 1.0
@@ -44,8 +46,6 @@ def main():
 
   speed = 1.0
   distance = 2.0
-
-  node = CarNode()
 
   vel_msg = Twist()
   vel_msg.linear.x = speed
@@ -159,6 +159,7 @@ def emergency():
   # servo.default()
   # motorA.stop()
   # motorB.stop()
+  node.emergency()
 
 if __name__ == "__main__":
     main()
