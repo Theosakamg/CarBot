@@ -3,6 +3,8 @@
 from picar.SunFounder_TB6612 import TB6612
 from drivers import PCA9685
 from components import Servo, Throttle
+
+from node import CarNode
 from ros.geometry_msgs import Twist
 
 import atexit
@@ -44,7 +46,7 @@ def main():
   # direction()
   # engine()
 
-  speed = 1.0
+  speed = 0.3
   distance = 2.0
 
   vel_msg = Twist()
@@ -68,6 +70,8 @@ def main():
   vel_msg.linear.x = 0
   #Force the robot to stop
   node.publish(vel_msg)
+
+  node.emergency()
 
 
 def direction():

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from .builtin_msgs import time
+from ros.builtin_msgs import time
 
 class Header(object):
   seq : int

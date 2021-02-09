@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from .std_msgs import Header
+from ros.std_msgs import Header
 
 class Vector3(object):
   x : float
@@ -19,24 +19,6 @@ class Twist(object):
   def __init__(self):
     self.linear = Vector3()
     self.angular = Vector3()
-
-class Transform(object):
-  translation : Vector3
-  rotation : Quaternion
-
-  def __init__(self):
-    self.translation = Vector3()
-    self.rotation = Quaternion()
-
-class TransformStamped(object):
-  header : Header
-  child_frame_id : str  # the frame id of the child frame
-  transform : Transform
-
-  def __init__(self):
-    self.header = Header()
-    self.child_frame_id = ""
-    self.transform = Transform()
 
 class TwistStamped(object):
   header : Header
@@ -75,6 +57,25 @@ class QuaternionStamped(object):
   def __init__(self):
     self.header = Header()
     self.quaternion = Quaternion()
+
+class Transform(object):
+  translation : Vector3
+  rotation : Quaternion
+
+  def __init__(self):
+    self.translation = Vector3()
+    self.rotation = Quaternion()
+
+class TransformStamped(object):
+  header : Header
+  child_frame_id : str  # the frame id of the child frame
+  transform : Transform
+
+  def __init__(self):
+    self.header = Header()
+    self.child_frame_id = ""
+    self.transform = Transform()
+
 
 class Pose(object):
   position : Point
